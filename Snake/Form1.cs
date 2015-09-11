@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -7,47 +8,60 @@ namespace Snake
 {
     public partial class Form1 : Form
     {
-        public Snake Snake { get; set; }
+        public Engine Engine { get; set; }
 
         public Form1()
         {
             InitializeComponent();
-            this.Snake = new Snake(3, 50, 50, 3);
-        }
-
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
+            Engine = new Engine(3,50,50,10,10);
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
+            Directions direction;
+
             switch (e.KeyCode)
             {
                 case Keys.Up:
-                    Snake.Move(Directions.Up);
+                    direction=Directions.Up;
                     break;
                 case Keys.Down:
-                    Snake.Move(Directions.Down);
+                    direction = Directions.Down;
                     break;
                 case Keys.Left:
-                    Snake.Move(Directions.Left);
+                    direction = Directions.Left;
                     break;
                 case Keys.Right:
-                    Snake.Move(Directions.Right);
+                    direction = Directions.Right;
+                    break;
+                default:
+                    //think of a better way.
+                    direction = Directions.Up;
                     break;
             }
+
+            if (Engine.DetectSelfCollision(direction))
+            {
+                this.Dispose();
+            }
+
+            Engine.Move(direction);
 
             this.Refresh();
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            foreach (var item in Snake.SnakeBody)
+            var g = e.Graphics;
+            foreach (var item in Engine.Snake.SnakeBody)
             {
-                var g = e.Graphics;
-                g.DrawRectangle(new Pen(Color.Black), item.X, item.Y, Snake.BodyPartSize, Snake.BodyPartSize);
+                g.DrawRectangle(new Pen(Color.Black), item.X, item.Y, Engine.Snake.BodyPartSize, Engine.Snake.BodyPartSize);
+            }
+
+            foreach (var item in Engine.Bites)
+            {
+                var myBrush = new SolidBrush(item.Color);
+                g.FillRectangle(myBrush, item.X, item.Y, item.Size, item.Size);
             }
         }
     }

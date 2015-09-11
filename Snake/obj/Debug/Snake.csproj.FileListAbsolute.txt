@@ -7,3 +7,12 @@ c:\users\ipashov\documents\visual studio 2013\Projects\Snake\Snake\obj\Debug\Sna
 c:\users\ipashov\documents\visual studio 2013\Projects\Snake\Snake\obj\Debug\Snake.csproj.GenerateResource.Cache
 c:\users\ipashov\documents\visual studio 2013\Projects\Snake\Snake\obj\Debug\Snake.exe
 c:\users\ipashov\documents\visual studio 2013\Projects\Snake\Snake\obj\Debug\Snake.pdb
+D:\Repos\snakegame\Snake\bin\Debug\Snake.exe.config
+D:\Repos\snakegame\Snake\obj\Debug\Snake.exe
+D:\Repos\snakegame\Snake\obj\Debug\Snake.pdb
+D:\Repos\snakegame\Snake\bin\Debug\Snake.exe
+D:\Repos\snakegame\Snake\bin\Debug\Snake.pdb
+D:\Repos\snakegame\Snake\obj\Debug\Snake.csprojResolveAssemblyReference.cache
+D:\Repos\snakegame\Snake\obj\Debug\Snake.Form1.resources
+D:\Repos\snakegame\Snake\obj\Debug\Snake.Properties.Resources.resources
+D:\Repos\snakegame\Snake\obj\Debug\Snake.csproj.GenerateResource.Cache

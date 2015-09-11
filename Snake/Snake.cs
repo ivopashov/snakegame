@@ -8,13 +8,11 @@ namespace Snake
     {
         public List<BodyPart> SnakeBody { get; set; }
         public int BodyPartSize { get; set; }
-        public Directions CurrentDirection { get; set; }
 
         public Snake(int size, int startX, int startY, int bodyPartSize)
         {
             this.SnakeBody = new List<BodyPart>();
             this.BodyPartSize = bodyPartSize;
-            CurrentDirection = Directions.Right;
 
             for (int i = 0; i < size; i++)
             {
@@ -24,42 +22,55 @@ namespace Snake
 
         public void Move(Directions direction)
         {
-            if (IsDirectionAllowed(direction))
+            switch (direction)
             {
-                switch (direction)
-                {
-                    case Directions.Up:
-                        if (!DetectSelfCollision(0, -1))
-                        {
-                            Move(0, -1);
-                            this.CurrentDirection = direction;
-                        }
-                        break;
-                    case Directions.Down:
-                        if (!DetectSelfCollision(0, 1))
-                        {
-                            Move(0, 1);
-                            this.CurrentDirection = direction;
-                        }
-                        break;
-                    case Directions.Right:
-                        if (!DetectSelfCollision(1,0))
-                        {
-                            Move(1, 0);
-                            this.CurrentDirection = direction;
-                        }
-                        break;
-                    case Directions.Left:
-                        if (!DetectSelfCollision(-1, 0))
-                        {
-                            Move(-1, 0);
-                            this.CurrentDirection = direction;
-                        }
-                        break;
-                    default:
-                        break;
-                }
+                case Directions.Up:
+                    if (!DetectSelfCollision(0, -1))
+                    {
+                        Move(XMultiplier(direction), YMultiplier(direction));
+                    }
+                    break;
+                case Directions.Down:
+                    if (!DetectSelfCollision(0, 1))
+                    {
+                        Move(XMultiplier(direction), YMultiplier(direction));
+                    }
+                    break;
+                case Directions.Right:
+                    if (!DetectSelfCollision(1, 0))
+                    {
+                        Move(XMultiplier(direction), YMultiplier(direction));
+                    }
+                    break;
+                case Directions.Left:
+                    if (!DetectSelfCollision(-1, 0))
+                    {
+                        Move(XMultiplier(direction), YMultiplier(direction));
+                    }
+                    break;
+                default:
+                    break;
             }
+        }
+
+        public int XMultiplier(Directions direction)
+        {
+            if (direction == Directions.Right)
+                return 1;
+            else if (direction == Directions.Left)
+                return -1;
+            else
+                return 0;
+        }
+
+        public int YMultiplier(Directions direction)
+        {
+            if (direction == Directions.Up)
+                return -1;
+            else if (direction == Directions.Down)
+                return 1;
+            else
+                return 0;
         }
 
         private void Move(int xDiff, int yDiff)
@@ -70,31 +81,47 @@ namespace Snake
                 SnakeBody[i].Y = SnakeBody[i - 1].Y;
             }
 
-            SnakeBody[0].X += this.BodyPartSize * xDiff;
-            SnakeBody[0].Y += this.BodyPartSize * yDiff;
+            SnakeBody[0] = GetHeadNextPosition(xDiff, yDiff);
         }
 
-        private bool IsDirectionAllowed(Directions direction)
+        public BodyPart GetHeadNextPosition(int xDiff, int yDiff)
         {
-            if (((direction == Directions.Up && CurrentDirection == Directions.Down) || (direction == Directions.Down && CurrentDirection == Directions.Up))
-                || ((direction == Directions.Right && CurrentDirection == Directions.Left) || (direction == Directions.Left && CurrentDirection == Directions.Right))
-                )
+            return new BodyPart()
             {
-                return false;
+                X = SnakeBody[0].X + this.BodyPartSize * xDiff,
+                Y = SnakeBody[0].Y + this.BodyPartSize * yDiff
+            };
+        }
+
+        internal void Eat(Food result)
+        {
+            var lastBodyPartDirectionX = (SnakeBody[SnakeBody.Count - 2].X - SnakeBody[SnakeBody.Count - 1].X) / BodyPartSize;
+            var lastBodyPartDirectionY = (SnakeBody[SnakeBody.Count - 2].Y - SnakeBody[SnakeBody.Count - 1].Y) / BodyPartSize;
+
+            for (int i = 0; i < result.Bounty; i++)
+            {
+                SnakeBody.Add(
+                    new BodyPart()
+                    {
+                        X = SnakeBody[SnakeBody.Count - 1].X * BodyPartSize * (-1) * lastBodyPartDirectionX,
+                        Y = SnakeBody[SnakeBody.Count - 1].Y * BodyPartSize * (-1) * lastBodyPartDirectionY
+                    });
             }
-            return true;
         }
 
         private bool DetectSelfCollision(int xDiff, int yDiff)
         {
+            var potentialXHeadPosition = SnakeBody[0].X + this.BodyPartSize * xDiff;
+            var potentialYHeadPosition = SnakeBody[0].Y + this.BodyPartSize * yDiff;
             for (int i = 1; i < SnakeBody.Count; i++)
             {
-                if(((SnakeBody[0].X + this.BodyPartSize * xDiff)==SnakeBody[i].X && (SnakeBody[0].Y + this.BodyPartSize * yDiff)==SnakeBody[i].Y)){
-                    return false;
+                if (potentialXHeadPosition == SnakeBody[i].X && potentialYHeadPosition == SnakeBody[i].Y)
+                {
+                    return true;
                 }
             }
 
-            return true;
+            return false;
         }
     }
 
